@@ -83,16 +83,22 @@ baseUrl=environment.baseUrl;
   getAll(){
     return this.evenements;
   }
+
   addAll(events:any):Observable<any>{
-  return  this.httpClient.post<any>(`${this.baseUrl}/evenement/`,events,httpOptions);
+    let  iduser:string = localStorage.getItem("iduser")+""
+    console.log(iduser);
+    
+  return  this.httpClient.post<any>(`${this.baseUrl}/evenement/${iduser}`,events,httpOptions);
   }
 
   update(mission : string,jour:number,value:number){
 
   }
 getEventsByUserIdAndDate(id:string,date:Date){
+  console.log(`${this.baseUrl}/evenement/get/${id}/`);
+  console.log(date);
   
-  return  this.httpClient.post<any>(`${this.baseUrl}/evenement/${id}`,date,httpOptions);
+  return  this.httpClient.post<any>(`${this.baseUrl}/evenement/get/${id}/`,date,httpOptions);
 
 }
 

@@ -9,19 +9,24 @@ import {HttpClientModule} from '@angular/common/http';
 import { TestComponent } from './test/test.component';
 import { UserComponent } from './user/user.component';
 import { LoginComponent } from './login/login.component';
+import { MissionComponent } from './mission/mission.component';
+import { NgbModalModule, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 @NgModule({
   declarations: [
     AppComponent,
     EvenementsComponent,
     TestComponent,
     UserComponent,
-    LoginComponent
+    LoginComponent,
+    MissionComponent
   ],
   imports: [
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
-    FormsModule
+    FormsModule,
+    NgbModalModule,
+    NgbModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

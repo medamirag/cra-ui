@@ -15,25 +15,35 @@ import { MissionsService } from '../missions.service';
 })
 export class EvenementsComponent implements OnInit {
   evenements: Evenement[] = []
-  myDate: Date = new Date("09/26/2022")
+  myDate: Date = new Date()
   firstDay: number = 1
   lastDay: number = 1
   missions: Mission[]=[];
   days: number[] = []
   missionName:string=""
-  constructor(private activityService : ActiviteService, private evenementsService: EvenementsService,private missionService:MissionsService) { }
+  iduser:string=""
+  constructor(private activityService : ActiviteService, private evenementsService: EvenementsService,private missionService:MissionsService) { 
+   this.iduser= localStorage.getItem("iduser")+""
+  }
 
   ngOnInit(): void {
-    this.getAll();
-    this.onDateChange(this.myDate)
-    this.missions=this.missionService.getMission()
+    //this.getAll();
 
+this.getAll()
+    this.onDateChange(this.myDate)
+    this.missionService.getMission().subscribe(data=>this.missions=data);
+    
   }
 
   getAll() {
-
-    this.evenements = this.evenementsService.getAll();
-
+    this.evenements=[]
+    this.evenementsService.getEventsByUserIdAndDate(this.iduser,this.myDate).subscribe(
+      data=>{
+        this.evenements.push({
+          activite:data[0].activite,cota:data[0].cota,date:data[0].date,id:data[0].id,jour:data[0].jour,mission:data[0].mission
+        })
+          }
+    )
   }
   onDateChange(event: any) {
     this.myDate = new Date(event);
@@ -42,6 +52,7 @@ export class EvenementsComponent implements OnInit {
     for (let index = 1; index <= this.lastDay; index++) {
       this.days.push(index);
     }
+    this.getAll()
   }
   getDaysInMonth(date: Date) {
     let count = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
@@ -83,9 +94,11 @@ export class EvenementsComponent implements OnInit {
     }
     else{
       this.evenements.push({
-        activite:this.activityService.getEmptyActivity(this.lastDay),cota:0,date:new Date,id:0,jour:0,mission:this.missionName
+        activite:this.activityService.getEmptyActivity(this.lastDay),cota:0,date:this.myDate,id:0,jour:0,mission:this.missionName
       })
     }
+    console.log(this.evenements);
+    
   }
   addAll(){
     return this.evenementsService.addAll(this.evenements).subscribe(data=>console.log(data));

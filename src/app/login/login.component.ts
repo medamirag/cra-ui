@@ -8,8 +8,20 @@ import { UserService } from '../user.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  iduser:string=""
+  constructor(private router:Router,private userService : UserService) { 
+    this.iduser=localStorage.getItem('iduser')+""
+    if(this.iduser!=="")
+    {
+      this.router.navigate(['/home'])
+      
+    }
+    else{
+      
+    }
+  }
 
-  constructor(private router:Router,private userService : UserService) { }
+  
 username:string=""
 password:string=""
 error:string=""
