@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { Activite } from '../activite';
 import { ActiviteService } from '../activite.service';
 import { Evenement } from '../evenement';
@@ -16,41 +16,43 @@ import { MissionsService } from '../missions.service';
 export class EvenementsComponent implements OnInit {
   evenements: Evenement[] = []
   myDate: Date = new Date()
+  totaux = new Map<number, number>();
+  totauxval :number=0
   firstDay: number = 1
   lastDay: number = 1
-  missions: Mission[]=[];
+  missions: Mission[] = [];
   days: number[] = []
-  missionName:string=""
-  iduser:string=""
-  constructor(private activityService : ActiviteService, private evenementsService: EvenementsService,private missionService:MissionsService) { 
-   this.iduser= localStorage.getItem("iduser")+""
+  missionName: string = ""
+  iduser: string = ""
+  constructor(private activityService: ActiviteService, private evenementsService: EvenementsService, private missionService: MissionsService) {
+    this.iduser = localStorage.getItem("iduser") + ""
   }
 
   ngOnInit(): void {
     //this.getAll();
-
-this.getAll()
+    this.getAll()
     this.onDateChange(this.myDate)
-    this.missionService.getMission().subscribe(data=>this.missions=data);
-    
+    this.missionService.getMission().subscribe(data => this.missions = data);
+
   }
 
   getAll() {
-    this.evenementsService.getEventsByUserIdAndDate(this.iduser,this.myDate).subscribe(
-      data=>{  
+    this.evenementsService.getEventsByUserIdAndDate(this.iduser, this.myDate).subscribe(
+      data => {
         console.log(data);
-        
-        this.evenements=data
+
+        this.evenements = data
+        this.getTotaux();
 
       }
     )
   }
- changeInput(event:any){
+  changeInput(event: any) {
 
-     this.update(event.id.split('|')[0], event.id.split('|')[1], event.value)
+    this.update(event.id.split('|')[0], event.id.split('|')[1], event.value)
+    this.getTotaux()
 
-  // detectChange
- }
+  }
   onDateChange(event: any) {
     this.myDate = new Date(event);
     this.lastDay = this.getDaysInMonth(this.myDate);
@@ -60,74 +62,96 @@ this.getAll()
     }
     this.getAll()
   }
+
+  getClass(n:any){
+    
+    if (n>1){
+      return 'alert'
+    }
+    // else if(n===0.5){
+    //   return 'warning'
+    // }
+    // else if (n===1){
+    //   return "perfect"
+    // }
+    else{
+      return ""
+    }
+  }
+
   getDaysInMonth(date: Date) {
     let count = new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
     console.log(count);
     return count
 
   }
-  detectChange(mission:string,jour:number,value:number) {
-    this.update(mission,jour,value)
+  detectChange(mission: string, jour: number, value: number) {
+    this.update(mission, jour, value)
   }
-  // detectChange(event: any) {
-  //   console.log(event.id);
-  //   console.log(event.value);
-  //   this.update(event.id.split('|')[0], event.id.split('|')[1], event.value)
-  // }
+
   update(mission: string, jour: number, valeur: number) {
     let m: any;
     this.evenements.forEach(element => {
       if (element.mission === mission) {
         m = element.activite.find(ev => ev.jour == jour);
         if (m) {
-          if (valeur==0.5)
-          m.cota = 1
-          else if(valeur==1)
-          m.cota =0
+          if (valeur == 0.5)
+            m.cota = 1
+          else if (valeur == 1)
+            m.cota = 0
           else
-          m.cota = 0.5
+            m.cota = 0.5
         }
 
 
       }
     });
   }
-  // update(mission: string, jour: number, valeur: number) {
-  //   let m: any;
-  //   this.evenements.forEach(element => {
-  //     if (element.mission === mission) {
-  //       m = element.activite.find(ev => ev.jour == jour);
-  //       if (m) {
-  //         m.cota = valeur
-  //       }
 
 
-  //     }
-  //   });
-  // }
-
-  getMission(event:any){
+  getMission(event: any) {
     this.missionName = event.value;
   }
-  addMission(){
+  addMission() {
     console.log("clickd");
-    
-    if(this.evenements.find(ev=>ev.mission===this.missionName)){
+
+    if (this.evenements.find(ev => ev.mission === this.missionName)) {
       alert("Mission Existss")
     }
-    else if(this.missionName===""){
+    else if (this.missionName === "") {
       alert("select mission!")
     }
-    else{
+    else {
       this.evenements.push({
-        activite:this.activityService.getEmptyActivity(this.lastDay),cota:0,date:this.myDate,id:0,jour:0,mission:this.missionName
+        activite: this.activityService.getEmptyActivity(this.lastDay), cota: 0, date: this.myDate, id: 0, jour: 0, mission: this.missionName
       })
     }
     console.log(this.evenements);
-    
+
   }
-  addAll(){
-    return this.evenementsService.addAll(this.evenements).subscribe(data=>console.log(data));
+  addAll() {
+    return this.evenementsService.addAll(this.evenements).subscribe(data => console.log(data));
+  }
+  getTotaux() {
+    this.totaux = new Map<number, number>();
+    this.totauxval=0;
+    this.evenements.forEach(element0 => {
+
+      element0.activite.forEach(element => {
+        this.totauxval+=element.cota;
+        let oldelement = this.totaux.get(element.jour)
+        if (oldelement !== undefined) {
+          this.totaux.set(element.jour, oldelement + element.cota)
+        }
+        else {
+          this.totaux.set(element.jour, element.cota)
+
+        }
+
+      });
+    });
+    console.log(this.totaux);
+
   }
 
 }
