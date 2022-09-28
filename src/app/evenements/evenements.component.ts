@@ -36,15 +36,21 @@ this.getAll()
   }
 
   getAll() {
-    this.evenements=[]
     this.evenementsService.getEventsByUserIdAndDate(this.iduser,this.myDate).subscribe(
-      data=>{
-        this.evenements.push({
-          activite:data[0].activite,cota:data[0].cota,date:data[0].date,id:data[0].id,jour:data[0].jour,mission:data[0].mission
-        })
-          }
+      data=>{  
+        console.log(data);
+        
+        this.evenements=data
+
+      }
     )
   }
+ changeInput(event:any){
+
+     this.update(event.id.split('|')[0], event.id.split('|')[1], event.value)
+
+  // detectChange
+ }
   onDateChange(event: any) {
     this.myDate = new Date(event);
     this.lastDay = this.getDaysInMonth(this.myDate)
@@ -60,25 +66,45 @@ this.getAll()
     return count
 
   }
-  detectChange(event: any) {
-    console.log(event.id);
-    console.log(event.value);
-    this.update(event.id.split('|')[0], event.id.split('|')[1], event.value)
+  detectChange(mission:string,jour:number,value:number) {
+    this.update(mission,jour,value)
   }
+  // detectChange(event: any) {
+  //   console.log(event.id);
+  //   console.log(event.value);
+  //   this.update(event.id.split('|')[0], event.id.split('|')[1], event.value)
+  // }
   update(mission: string, jour: number, valeur: number) {
     let m: any;
-    this.evenementsService.update(mission, jour, valeur)
     this.evenements.forEach(element => {
       if (element.mission === mission) {
         m = element.activite.find(ev => ev.jour == jour);
         if (m) {
-          m.cota = valeur
+          if (valeur==0.5)
+          m.cota = 1
+          else if(valeur==1)
+          m.cota =0
+          else
+          m.cota = 0.5
         }
 
 
       }
     });
   }
+  // update(mission: string, jour: number, valeur: number) {
+  //   let m: any;
+  //   this.evenements.forEach(element => {
+  //     if (element.mission === mission) {
+  //       m = element.activite.find(ev => ev.jour == jour);
+  //       if (m) {
+  //         m.cota = valeur
+  //       }
+
+
+  //     }
+  //   });
+  // }
 
   getMission(event:any){
     this.missionName = event.value;
