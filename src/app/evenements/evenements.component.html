@@ -1,16 +1,21 @@
-<input type="month"  [ngModel]="myDate | date:'yyyy-MM'" (ngModelChange)="onDateChange($event)">
+
+<div class="container bg-light">
+    <div class="col-md-12 text-center">
+        <input type="month"  [ngModel]="myDate | date:'yyyy-MM'" (ngModelChange)="onDateChange($event)">
+
+        <select class="form-select"  
+         (change)="getMission($event.target)">
+            <option *ngFor="let mission of missions" [ngValue]="mission.name"   >{{mission.name}}</option>
+            <option [ngValue]="" [selected]="true">Select Mission</option>
+        </select>
+        
+<button class="btn btn-secondary" (click)="addMission()">Add Mission</button>
+    </div>
+</div>
+<br>
 <br>
 
-<select   
- (change)="getMission($event.target)">
-    <option *ngFor="let mission of missions" [ngValue]="mission.name"   >{{mission.name}}</option>
-    <option [ngValue]="" [selected]="true">Select Mission</option>
-</select>
-<br>
-<button class="btn btn-warning" (click)="addMission()">Add Mission</button>
-
-
-<table class="table" id="myTable">
+<table class="table table-striped" id="myTable">
     <thead>
         <th>missions</th>
         <th *ngFor="let day of days">{{day}}</th>
@@ -24,7 +29,7 @@
             <!-- <td *ngFor="let day of days">{{day===evenement.jour?evenement.cota:0}}</td> -->
             <td *ngFor="let day of evenement.activite" >
           <div id="{{evenement.mission}}|{{day.jour}}" (click)="changeInput($event.target)">
-                <select   disabled id="{{evenement.mission}}|{{day.jour}}" >
+                <select class="btn-group"   disabled id="{{evenement.mission}}|{{day.jour}}" >
                 <option [ngValue]="0"  [selected]="day.cota===0 " >0</option>
                 <option [ngValue]="1" [selected]="day.cota===1 ">1</option>
                 <option [ngValue]="0.5"  [selected]="day.cota===0.5 ">0.5</option> 

@@ -53,8 +53,8 @@ this.getAll()
  }
   onDateChange(event: any) {
     this.myDate = new Date(event);
-    this.lastDay = this.getDaysInMonth(this.myDate)
-    
+    this.lastDay = this.getDaysInMonth(this.myDate);
+    this.days = [];
     for (let index = 1; index <= this.lastDay; index++) {
       this.days.push(index);
     }
