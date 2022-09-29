@@ -15,13 +15,7 @@ const httpOptions = {
 export class MissionsService {
   baseUrl=environment.baseUrl
   userid:string="";
-missions:Mission[]=[
-  {name:"mission1"},
-  {name:"mission2"},
-  {name:"mission3"},
-  {name:"mission4"},
-  {name:"mission5"},
-]
+missions:Mission[]=[]
   constructor(private httpClient:HttpClient) { }
 
   getMission(){

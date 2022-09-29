@@ -1,4 +1,11 @@
-<div class="container bg-light">
+
+<div class="text-center ">
+    <div>
+        <button class="btn btn-primary btn-lg " (click)="addAll()">Save</button>
+    </div>
+</div>
+<div class="">
+    <div class="container bg-light">
     <div class="col-md-12 text-center">
         <input type="month" [ngModel]="myDate | date:'yyyy-MM'" (ngModelChange)="onDateChange($event)">
 
@@ -7,9 +14,13 @@
             <option [ngValue]="" [selected]="true">Select Mission</option>
         </select>
 
-        <button class="btn btn-secondary" (click)="addMission()">Add Mission</button>
+        <button class="btn btn-danger"  [disabled]="hasAbsence" (click)="addMission(2)">Add Absence</button><button [disabled]="hasOvertime" class="btn btn-success" (click)="addMission(1)">add overtime</button><button class="btn btn-secondary" (click)="addMission(0)">Add Mission</button>
     </div>
+
 </div>
+
+</div>
+
 <br>
 <br>
 
@@ -17,30 +28,61 @@
     <thead class="header">
         <th>missions</th>
         <th *ngFor="let day of days">{{day}}</th>
-        
+
 
 
     </thead>
     <tbody>
         <tr *ngFor="let evenement of evenements; let i=index">
-            <td>{{evenement.mission}}</td>
+            <td ><button class="btn btn-primary " (click)="removeMission(evenement.mission)">{{evenement.mission}}</button> </td>
             <!-- <td *ngFor="let day of days">{{day===evenement.jour?evenement.cota:0}}</td> -->
             <td *ngFor="let day of evenement.activite">
-                <div id="{{evenement.mission}}|{{day.jour}}" (click)="changeInput($event.target)">
-                    <select class="btn-group" disabled id="{{evenement.mission}}|{{day.jour}}">
+                <div id="{{evenement.mission}}|{{day.jour}}" (click)="changeInput($event.target,0)">
+                    <select  *ngIf="evenement.mission!='Overtime'&&evenement.mission!='Absence'" class="btn-group" disabled id="{{evenement.mission}}|{{day.jour}}">
                         <option [ngValue]="0" [selected]="day.cota===0 ">0</option>
                         <option [ngValue]="1" [selected]="day.cota===1 ">1</option>
                         <option [ngValue]="0.5" [selected]="day.cota===0.5 ">0.5</option>
                     </select>
                 </div>
-            </td>
-        </tr>
-        <tr ><td>totaux : {{totauxval}}</td>
-                  <td *ngFor="let day of days; let i=index" [ngClass]='getClass(totaux.get(day))'>{{totaux.get(day)}}</td> 
+                    <input  value="{{day.absence}}" (keyup)="changeInput($event.target,1)" type="number" *ngIf="evenement.mission==='Absence'" class="btn-group"  id="{{evenement.mission}}|{{day.jour}}|Absence">
+                    <input  value="{{day.overtime}}" (keyup)="changeInput($event.target,1)" type="number" *ngIf="evenement.mission==='Overtime'" class="btn-group"  id="{{evenement.mission}}|{{day.jour}}|Overtime">
 
+                </td>
         </tr>
+
+
+        <tr *ngFor="let evenement of evenementsOver; let i=index">
+            <td ><button class="btn btn-success" (click)="removeOvertime()">{{evenement.mission}}</button></td>
+            <!-- <td *ngFor="let day of days">{{day===evenement.jour?evenement.cota:0}}</td> -->
+            <td *ngFor="let day of evenement.activite">
+                <div id="{{evenement.mission}}|{{day.jour}}" (click)="changeInput($event.target,0)">
+                  
+                </div>
+                    <input  value="{{day.overtime}}" (keyup)="changeInput($event.target,1)" type="number" *ngIf="evenement.mission==='Overtime'" class="btn-group"  id="{{evenement.mission}}|{{day.jour}}|Overtime">
+
+                </td>
+        </tr>
+
+        <tr *ngFor="let evenement of evenementsAbs; let i=index">
+            <td ><button class="btn btn-danger" (click)="removeAbsence()">{{evenement.mission}}</button></td>
+            <!-- <td *ngFor="let day of days">{{day===evenement.jour?evenement.cota:0}}</td> -->
+            <td *ngFor="let day of evenement.activite">
+                <div id="{{evenement.mission}}|{{day.jour}}" (click)="changeInput($event.target,0)">
+                 
+                </div>
+                    <input  value="{{day.absence}}" (keyup)="changeInput($event.target,1)" type="number" *ngIf="evenement.mission==='Absence'" class="btn-group"  id="{{evenement.mission}}|{{day.jour}}|Absence">
+                </td>
+        </tr>
+                
+
+        
+        <tr>
+            <td>totaux </td>
+            <td *ngFor="let day of days; let i=index" [ngClass]='getClass(totaux.get(day))'>{{totaux.get(day)}}</td>
+        </tr>
+        <tr><td>Total Travail </td><td>{{totauxval}} </td></tr>
+        <tr><td>Total Overtime</td><td>{{totalOvert}} </td></tr>
+        <tr><td>Total Absence </td><td>{{totalAbs}}</td></tr>
+   
     </tbody>
 </table>
-<div class="col-md-12 text-center">
-    <button class="btn btn-primary" (click)="addAll()">Save</button>
-</div>

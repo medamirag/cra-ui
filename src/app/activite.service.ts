@@ -12,7 +12,7 @@ export class ActiviteService {
   getEmptyActivity(n:number){
     this.emptyActivities=[]
     for (let index = 1; index <= n; index++) {
-      this.emptyActivities.push({cota:0,jour:index})
+      this.emptyActivities.push({cota:0,jour:index,absence:0,overtime:0})
       
     }
     return this.emptyActivities

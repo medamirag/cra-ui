@@ -8,10 +8,13 @@ import { UserService } from '../user.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  iduser:string=""
+  iduser:number=0
   constructor(private router:Router,private userService : UserService) { 
-    this.iduser=localStorage.getItem('iduser')+""
-    if(this.iduser!=="")
+    this.iduser=Number(localStorage.getItem('iduser'))
+    console.log("this.iduserss"+this.iduser);
+    
+    if(this.iduser>0)
+    
     {
       this.router.navigate(['/home'])
       

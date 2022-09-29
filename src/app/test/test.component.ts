@@ -12,7 +12,7 @@ export class TestComponent implements OnInit {
   constructor(private eventService:EvenementsService,private userService:UserService) { }
 
   ngOnInit(): void {
-    this.eventService.getEventsByUserIdAndDate("1",new Date()).subscribe(data=>console.log(data));
+  //  this.eventService.getEventsByUserIdAndDate("1",new Date()).subscribe(data=>console.log(data));
     //this.userService.getUser("user1","password1").subscribe(data=>console.log(data));
   }
 

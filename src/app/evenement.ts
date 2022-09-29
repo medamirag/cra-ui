@@ -10,7 +10,10 @@ export interface Evenement {
     cota:number;
     date:Date;
     jour:number;
-    id:number
+    id:number;
+    heuresup:number;
+    absence:number;
+    typeEvent:number;
 
 
 
